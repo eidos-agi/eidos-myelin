@@ -1,0 +1,57 @@
+{
+  "id": "88a6b80c-7cea-4b0b-8884-8b209bde5e64",
+  "version": "0.1.0",
+  "projectName": "Eidos Myelin \u2014 Tactical Intelligence Architecture",
+  "created": "2026-04-03",
+  "phase": "decided",
+  "transitions": [
+    {
+      "phase": "research",
+      "date": "2026-04-03"
+    },
+    {
+      "phase": "locked",
+      "date": "2026-04-03",
+      "note": "Criteria weights frozen"
+    },
+    {
+      "phase": "reviewed",
+      "date": "2026-04-03",
+      "note": "Peer review by GPT-5.2 (via PAL MCP)"
+    },
+    {
+      "phase": "scored",
+      "date": "2026-04-03",
+      "note": "Scored candidate: commons-human-gate"
+    },
+    {
+      "phase": "decided",
+      "date": "2026-04-03",
+      "note": "Commons-first with human gate. Core distillation modules (distill.py, tactics.py, user_model.py) liv"
+    }
+  ],
+  "question": "What is the right architecture for a tactical intelligence layer that distills cross-session patterns from Claude Code transcripts into reusable, confidence-scored tactics, anti-patterns, and user behavioral models \u2014 and how should it integrate with claude-session-commons?",
+  "criteria": {
+    "correctness": {
+      "description": "Does the architecture produce accurate, non-garbage tactics? Can it avoid the -3% AGENTS.md failure mode?",
+      "weight": 0.25
+    },
+    "implementation_effort": {
+      "description": "How much new code, how many repos touched, how long to MVP?",
+      "weight": 0.15
+    },
+    "self_improvement": {
+      "description": "Can the system improve its own distillation, retrieval, and thresholds over time?",
+      "weight": 0.2
+    },
+    "safety": {
+      "description": "Resistance to garbage tactics, prompt injection, and harmful auto-generation. Human gate integrity.",
+      "weight": 0.25
+    },
+    "ecosystem_fit": {
+      "description": "How well does it integrate with commons, resume-resume, the daemon, and the existing Eidos toolchain?",
+      "weight": 0.15
+    }
+  },
+  "context": "eidos-myelin is a new tool in the Eidos AGI ecosystem. It sits on top of claude-session-commons (published PyPI library that parses Claude Code session JSONL transcripts, chunks them, embeds with fastembed/sqlite-vec, classifies, and has analyze_patterns() for per-session pattern extraction). The gap: commons captures everything but nothing turns it into wisdom. Every new session starts from scratch. eidos-myelin should distill cross-session patterns into three kinds of learned knowledge: (1) Tactics \u2014 what consistently works, promoted after repeated observation, confidence-scored with decay; (2) Anti-patterns \u2014 what to stop doing, from high-tool-call/low-progress sessions and user corrections; (3) User Model \u2014 behavioral profile predicting productive sessions. GPT-5.2 graded the concept 7/10, identified key risks (garbage tactics from noisy data, prompt injection from LLM-generated text, need for evaluation harness), and recommended: separate package on top of commons, lifecycle states (draft\u2192candidate\u2192active\u2192stale\u2192retired), human-in-the-loop activation, provenance linking to specific sessions/turns, scoped tactics (global vs project), and a minimal V1 that only distills project-scoped operational constraints with explicit user approval. Constraints: single user, ~20 repos, ~200 sessions, local SQLite, distillation via claude -p with haiku."
+}
