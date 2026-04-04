@@ -3,700 +3,675 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eidos-myelin &mdash; Tactical Intelligence for Claude Code</title>
+<title>eidos-myelin</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
+
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --border: #1e1e2e;
-    --accent: #7c6af0;
-    --accent-glow: rgba(124, 106, 240, 0.15);
-    --text: #e2e0ea;
-    --muted: #8a87a0;
-    --green: #4ade80;
-    --red: #f87171;
-    --amber: #fbbf24;
-    --cyan: #22d3ee;
+    --cream: #f5f0e8;
+    --ink: #1a1a18;
+    --faded: #8a8578;
+    --pulse: #5b3cc4;
+    --pulse-soft: rgba(91, 60, 196, 0.08);
+    --nerve: #c4a6ff;
+    --axon: rgba(91, 60, 196, 0.3);
+    --red: #c0392b;
+    --green: #27ae60;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.7;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.75;
     overflow-x: hidden;
   }
 
-  .grain {
+  /* === NEURAL CANVAS === */
+  .neural-canvas {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 0;
+    opacity: 0.4;
   }
 
+  /* === LAYOUT === */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 8vh 2rem 12vh;
+  }
+
+  /* === HERO === */
   .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
+    padding: 12vh 0 8vh;
     position: relative;
   }
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .logo {
-    font-size: 0.85rem;
-    letter-spacing: 0.3em;
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--pulse);
     margin-bottom: 2rem;
-    font-weight: 600;
   }
 
   h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
   }
 
-  .subtitle {
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-    color: var(--muted);
-    max-width: 640px;
-    margin-bottom: 3rem;
+  h1 em {
+    font-style: italic;
+    color: var(--pulse);
   }
 
-  .metaphor {
-    display: inline-block;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.2rem 2rem;
-    font-size: 0.95rem;
-    color: var(--muted);
-    max-width: 580px;
-    line-height: 1.8;
+  .hero-line {
+    width: 80px;
+    height: 1px;
+    background: var(--ink);
+    margin: 2rem 0;
   }
 
-  .metaphor strong {
-    color: var(--text);
+  .hero-sub {
+    font-size: 1.3rem;
+    color: var(--faded);
+    max-width: 480px;
+    font-style: italic;
   }
 
-  .metaphor em {
-    color: var(--accent);
-    font-style: normal;
-  }
-
+  /* === SECTIONS === */
   section {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 6rem 2rem;
+    margin: 8rem 0;
   }
 
   h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    font-style: italic;
   }
 
   h2 .num {
-    color: var(--accent);
-    font-weight: 400;
-    margin-right: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-style: normal;
+    color: var(--faded);
+    vertical-align: super;
+    margin-right: 0.3rem;
   }
 
-  .section-lead {
-    font-size: 1.1rem;
-    color: var(--muted);
-    margin-bottom: 3rem;
-    max-width: 640px;
+  p { margin-bottom: 1.2rem; }
+
+  /* === MARGINALIA === */
+  .margin-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--faded);
+    line-height: 1.5;
+    margin: 2rem 0;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--axon);
   }
 
-  /* The Problem */
-  .problem-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 640px) {
-    .problem-grid, .three-col, .comparison { grid-template-columns: 1fr; }
-  }
-
-  .problem-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .problem-card .label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--red);
-    margin-bottom: 0.5rem;
-  }
-
-  .problem-card h3 {
-    font-size: 1rem;
-    color: #fff;
-    margin-bottom: 0.5rem;
-  }
-
-  .problem-card p {
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-
-  /* Three Knowledge Types */
-  .three-col {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .knowledge-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
+  /* === BIOLOGY BOX === */
+  .biology {
+    background: var(--pulse-soft);
+    border-radius: 2px;
+    padding: 2rem 2.5rem;
+    margin: 3rem 0;
     position: relative;
-    overflow: hidden;
   }
 
-  .knowledge-card::before {
+  .biology::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--pulse);
   }
 
-  .knowledge-card.tactics::before { background: var(--green); }
-  .knowledge-card.anti::before { background: var(--red); }
-  .knowledge-card.user::before { background: var(--cyan); }
-
-  .knowledge-card .icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+  .biology p {
+    margin-bottom: 0.8rem;
+    font-size: 1.05rem;
   }
 
-  .knowledge-card h3 {
-    font-size: 1.1rem;
-    color: #fff;
-    margin-bottom: 0.75rem;
-  }
+  .biology strong { color: var(--pulse); font-weight: 700; }
 
-  .knowledge-card p {
-    font-size: 0.9rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  .example {
-    background: rgba(124, 106, 240, 0.06);
-    border-left: 2px solid var(--accent);
-    padding: 0.75rem 1rem;
-    border-radius: 0 8px 8px 0;
-    font-size: 0.82rem;
-    color: var(--text);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    line-height: 1.6;
-  }
-
-  /* Pipeline */
-  .pipeline {
-    display: flex;
-    align-items: stretch;
+  /* === SPECIMEN CARDS === */
+  .specimens {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 0;
-    margin: 2rem 0;
+    margin: 3rem 0;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .specimen {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: relative;
+  }
+
+  .specimen:last-child { border-bottom: none; }
+
+  .specimen-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .specimen-type.tactic { color: var(--green); }
+  .specimen-type.anti { color: var(--red); }
+  .specimen-type.behavioral { color: var(--pulse); }
+
+  .specimen h3 {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .specimen p {
+    font-size: 0.95rem;
+    color: var(--faded);
+    margin-bottom: 0.8rem;
+  }
+
+  .specimen-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: var(--ink);
+    background: rgba(0,0,0,0.03);
+    padding: 1rem 1.2rem;
+    border-radius: 2px;
+  }
+
+  /* === PIPELINE (as notation) === */
+  .notation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 2.5;
+    margin: 3rem 0;
+    padding: 2rem;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 2px;
     overflow-x: auto;
   }
 
-  .pipe-step {
-    flex: 1;
-    min-width: 160px;
-    padding: 1.5rem 1rem;
-    text-align: center;
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border);
+  .notation .dim { opacity: 0.35; }
+  .notation .lit { color: var(--nerve); }
+  .notation .grn { color: #7dcea0; }
+  .notation .comment { color: #7a7568; font-style: italic; }
+
+  /* === EVIDENCE === */
+  .evidence {
+    margin: 3rem 0;
+    border: 1px solid rgba(0,0,0,0.1);
   }
 
-  .pipe-step:first-child { border-radius: 12px 0 0 12px; }
-  .pipe-step:last-child { border-radius: 0 12px 12px 0; }
-
-  .pipe-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: -1px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    border-left: 12px solid var(--border);
-    z-index: 1;
+  .evidence-item {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    align-items: start;
   }
 
-  .pipe-step .step-label {
-    font-size: 0.65rem;
+  .evidence-item:last-child { border-bottom: none; }
+
+  .evidence-grade {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
+    padding: 0.3rem 0;
+    text-align: center;
+    border-radius: 2px;
   }
 
-  .pipe-step .step-name {
-    font-size: 0.95rem;
-    color: #fff;
-    font-weight: 600;
+  .evidence-grade.confirmed {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--green);
+  }
+
+  .evidence-grade.reasoned {
+    background: var(--pulse-soft);
+    color: var(--pulse);
+  }
+
+  .evidence-body h4 {
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: 0.3rem;
   }
 
-  .pipe-step .step-detail {
-    font-size: 0.78rem;
-    color: var(--muted);
+  .evidence-body p {
+    font-size: 0.9rem;
+    color: var(--faded);
+    margin-bottom: 0;
   }
 
-  .pipe-step.exists { border-color: var(--green); background: rgba(74, 222, 128, 0.03); }
-  .pipe-step.new { border-color: var(--accent); background: rgba(124, 106, 240, 0.05); }
-
-  /* Research Evidence */
-  .evidence-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .evidence-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .evidence-card .tag {
-    display: inline-block;
+  .evidence-body .src {
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-  }
-
-  .tag.confirmed { background: rgba(74, 222, 128, 0.15); color: var(--green); }
-  .tag.insight { background: rgba(124, 106, 240, 0.15); color: var(--accent); }
-
-  .evidence-card h3 {
-    font-size: 0.95rem;
-    color: #fff;
-    margin-bottom: 0.5rem;
-  }
-
-  .evidence-card p {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .evidence-card .source {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 0.75rem;
+    color: var(--faded);
     opacity: 0.6;
+    margin-top: 0.4rem;
   }
 
-  /* Comparison */
-  .comparison {
+  /* === SCORES === */
+  .scores {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 2rem;
+    gap: 0;
+    margin: 3rem 0;
+    border: 1px solid rgba(0,0,0,0.1);
   }
 
-  .comp-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
+  .score-card {
+    padding: 2rem;
     text-align: center;
+    border-right: 1px solid rgba(0,0,0,0.08);
   }
 
-  .comp-card.winner {
-    border-color: var(--accent);
-    box-shadow: 0 0 30px var(--accent-glow);
+  .score-card:last-child { border-right: none; }
+
+  .score-card h4 {
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
   }
 
-  .comp-card h3 {
-    font-size: 1rem;
-    color: #fff;
+  .score-card .big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
     margin-bottom: 0.3rem;
   }
 
-  .comp-card .score {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0.5rem 0;
-  }
+  .score-card.winner .big { color: var(--pulse); }
+  .score-card:not(.winner) .big { color: var(--faded); }
 
-  .comp-card.winner .score { color: var(--accent); }
-  .comp-card:not(.winner) .score { color: var(--muted); }
-
-  .comp-card .verdict {
+  .score-card .why {
     font-size: 0.8rem;
-    color: var(--muted);
+    color: var(--faded);
+    font-style: italic;
   }
 
-  /* The Loop */
-  .loop-diagram {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2rem;
+  /* === PUNCHLINE === */
+  .punchline {
+    margin: 10rem 0 6rem;
     text-align: center;
-    margin: 2rem 0;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.85rem;
-    line-height: 2.2;
-    color: var(--muted);
   }
 
-  .loop-diagram .highlight { color: var(--accent); font-weight: 600; }
-  .loop-diagram .green { color: var(--green); }
-  .loop-diagram .arrow { color: var(--muted); opacity: 0.4; }
-
-  /* Bottom line */
-  .bottom-line {
-    text-align: center;
-    padding: 6rem 2rem;
-    max-width: 700px;
-    margin: 0 auto;
+  .punchline h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.3;
+    font-style: normal;
   }
 
-  .bottom-line h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+  .punchline h2 em {
+    font-style: italic;
+    color: var(--pulse);
   }
 
-  .bottom-line p {
+  .punchline p {
     font-size: 1.1rem;
-    color: var(--muted);
-    margin-bottom: 2rem;
+    color: var(--faded);
+    max-width: 520px;
+    margin: 2rem auto;
+    font-style: italic;
   }
 
-  .cta {
+  .gh-link {
     display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--pulse);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: opacity 0.2s;
+    border-bottom: 1px solid var(--axon);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
   }
 
-  .cta:hover { opacity: 0.85; }
+  .gh-link:hover { border-color: var(--pulse); }
 
-  .footer {
-    text-align: center;
-    padding: 3rem 2rem;
-    font-size: 0.8rem;
-    color: var(--muted);
-    opacity: 0.5;
-    border-top: 1px solid var(--border);
-  }
-
-  .divider {
-    width: 60px;
-    height: 1px;
-    background: var(--border);
-    margin: 4rem auto;
-  }
-
-  .stat-row {
+  /* === FOOTER === */
+  .colophon {
+    margin-top: 8rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--faded);
     display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 3rem 0;
-    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
-  .stat {
-    text-align: center;
-  }
-
-  .stat .number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--accent);
-  }
-
-  .stat .label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  /* === RESPONSIVE === */
+  @media (max-width: 640px) {
+    .scores { grid-template-columns: 1fr; }
+    .score-card { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .score-card:last-child { border-bottom: none; }
+    .evidence-item { grid-template-columns: 1fr; }
+    .evidence-grade { text-align: left; }
   }
 </style>
 </head>
 <body>
 
-<div class="grain"></div>
+<!-- Animated neural network background -->
+<canvas class="neural-canvas" id="neurons"></canvas>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="logo">eidos agi</div>
-  <h1>eidos-myelin</h1>
-  <p class="subtitle">
-    Tactical intelligence for Claude Code. Learns what works across sessions. Surfaces it when it matters.
-  </p>
-  <div class="metaphor">
-    <strong>Myelin</strong> is the biological sheath that insulates neural pathways, making signals travel faster through repeated use. It doesn't create new neurons &mdash; it makes <em>existing pathways faster</em>. Same Claude Code, same tools. Smarter through experience.
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">eidos agi / myelin</div>
+    <h1>What if your<br>tools <em>learned?</em></h1>
+    <div class="hero-line"></div>
+    <p class="hero-sub">
+      Claude Code has perfect recall and zero learning.
+      Every session starts over. Myelin changes that.
+    </p>
   </div>
-</div>
 
-<!-- THE PROBLEM -->
-<section>
-  <h2><span class="num">01</span> The Problem</h2>
-  <p class="section-lead">Every Claude Code session starts from scratch. Perfect recall, zero learning.</p>
-
-  <div class="problem-grid">
-    <div class="problem-card">
-      <div class="label">Lost Knowledge</div>
-      <h3>Patterns vanish between sessions</h3>
-      <p>You figured out that <code>grep --type yaml</code> finds config in 1 call vs 4 with glob. Next session? Gone. You'll waste those same 4 calls again.</p>
+  <!-- BIO -->
+  <section>
+    <div class="biology">
+      <p><strong>Myelin</strong> is the biological sheath that wraps around nerve fibers. It doesn't create new pathways. It makes existing ones <em>faster</em>. Signals that travel myelinated axons move 100x faster than bare ones.</p>
+      <p>Practice builds myelin. Repetition builds myelin. Experience builds myelin.</p>
+      <p>Same neurons. Radically faster.</p>
     </div>
-    <div class="problem-card">
-      <div class="label">Repeated Mistakes</div>
-      <h3>Same errors, different day</h3>
-      <p>Subagents can't write outside the working directory. You discovered this 5 sessions ago. You'll discover it again tomorrow.</p>
-    </div>
-    <div class="problem-card">
-      <div class="label">Static Instructions</div>
-      <h3>CLAUDE.md doesn't learn</h3>
-      <p>Your instructions file is manually written, never updated, and can't observe its own impact. Research shows auto-generated context files <em>reduce</em> performance by 3%.</p>
-    </div>
-    <div class="problem-card">
-      <div class="label">Silent Friction</div>
-      <h3>Slowdowns you don't notice</h3>
-      <p>Approving every tool call. Over-reading before writing. Searching the wrong way. These patterns cost minutes per session, hours per month.</p>
-    </div>
-  </div>
-</section>
 
-<div class="divider"></div>
+    <p>
+      eidos-myelin watches how you use Claude Code &mdash; across sessions, across projects, across weeks &mdash; and distills what works into something it can use next time. Not instructions you write. Patterns it <em>observes</em>.
+    </p>
 
-<!-- THREE TYPES -->
-<section>
-  <h2><span class="num">02</span> Three Kinds of Learned Knowledge</h2>
-  <p class="section-lead">Myelin distills session transcripts into three types of actionable intelligence.</p>
+    <div class="margin-note">
+      Built on claude-session-commons, which already parses every session transcript, chunks it, embeds it, and extracts per-session patterns. Myelin adds the cross-session layer: aggregation, promotion, confidence scoring, and retrieval.
+    </div>
+  </section>
 
-  <div class="three-col">
-    <div class="knowledge-card tactics">
-      <div class="icon">&#9889;</div>
-      <h3>Tactics</h3>
-      <p>Cross-session patterns that consistently work. Promoted after repeated observation, confidence-scored, scoped to project or global.</p>
-      <div class="example">
-        TACTIC: search-strategy/cockpit-eidos<br>
-        Confidence: 0.87 (12 sessions)<br><br>
-        "grep --type yaml finds config in 1 call. Don't glob first."
+  <!-- THREE TYPES -->
+  <section>
+    <h2><span class="num">01</span> Three kinds of learned knowledge</h2>
+
+    <p>
+      Not all patterns are created equal. Myelin distinguishes between things that work, things that don't, and how <em>you</em> specifically prefer to operate.
+    </p>
+
+    <div class="specimens">
+      <div class="specimen">
+        <div class="specimen-type tactic">Tactic</div>
+        <h3>What consistently works</h3>
+        <p>Cross-session patterns promoted after repeated observation. Confidence-scored. Decay without reinforcement. Scoped to a project or global.</p>
+        <div class="specimen-example">
+          TACTIC: search-strategy/cockpit-eidos<br>
+          confidence: 0.87 &middot; seen 12x &middot; contradicted 0x<br>
+          <br>
+          "grep --type yaml finds config in 1 call.<br>
+          &nbsp;Don't glob first. Don't read files speculatively."
+        </div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-type anti">Anti-pattern</div>
+        <h3>What to stop doing</h3>
+        <p>Distilled from sessions with high tool-call counts and low progress. User corrections. Repeated failures. Research shows these are more valuable than positive patterns.</p>
+        <div class="specimen-example">
+          ANTI-PATTERN: over-reading<br>
+          confidence: 0.95 &middot; user corrected 3x<br>
+          <br>
+          "Reading &gt;2 files before writing correlates<br>
+          &nbsp;with user frustration in this project."
+        </div>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen-type behavioral">User Model</div>
+        <h3>How you work best</h3>
+        <p>Behavioral, not biographical. Predicts what makes sessions productive. Transparent &mdash; you can read it, edit it, reset it.</p>
+        <div class="specimen-example">
+          USER-MODEL: daniel/work-style<br>
+          from: 47 sessions<br>
+          <br>
+          "'go' means execute, zero discussion.<br>
+          &nbsp;Prefers proof over description.<br>
+          &nbsp;Checkpoint cadence: ~45 min.<br>
+          &nbsp;Momentum &gt; polish."
+        </div>
       </div>
     </div>
 
-    <div class="knowledge-card anti">
-      <div class="icon">&#9888;</div>
-      <h3>Anti-patterns</h3>
-      <p>Things to stop doing. Distilled from high-effort/low-progress sessions, user corrections, and repeated failures.</p>
-      <div class="example">
-        ANTI-PATTERN: over-reading<br>
-        Confidence: 0.95 (corrected 3x)<br><br>
-        "Reading &gt;2 files before writing correlates with user frustration."
+    <div class="margin-note">
+      Every tactic has a lifecycle: draft &rarr; candidate &rarr; active &rarr; stale &rarr; retired. Nothing becomes active without human approval. This is a guardrail, not a bottleneck &mdash; the research shows why.
+    </div>
+  </section>
+
+  <!-- THE PIPELINE -->
+  <section>
+    <h2><span class="num">02</span> How it works</h2>
+
+    <p>
+      The existing commons daemon already parses and indexes every session transcript in the background. Myelin adds a distillation pass after indexing, and an MCP server that surfaces results at session boot.
+    </p>
+
+    <div class="notation">
+      <span class="comment"># the pipeline</span><br>
+      <br>
+      <span class="dim">sessions/</span>*.jsonl<br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> commons.<span class="lit">parse</span>() &nbsp;<span class="comment"># exists</span><br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> commons.<span class="lit">chunk</span>() &nbsp;<span class="comment"># exists</span><br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> commons.<span class="lit">embed</span>() &nbsp;<span class="comment"># exists</span><br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> commons.<span class="lit">analyze_patterns</span>() &nbsp;<span class="comment"># exists &mdash; per session</span><br>
+      <br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> commons.<span class="grn">distill</span>() &nbsp;<span class="comment"># NEW &mdash; cross-session</span><br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> <span class="grn">human reviews</span> &nbsp;<span class="comment"># myelin review CLI</span><br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> <span class="grn">tactics.db</span> &nbsp;<span class="comment"># in insights.db</span><br>
+      <br>
+      <span class="comment"># at session boot (&lt;100ms)</span><br>
+      myelin.<span class="grn">tactics_for_project</span>(path) &rarr; top 5<br>
+      <br>
+      <span class="comment"># the loop that makes it self-improving</span><br>
+      myelin.<span class="grn">tactic_feedback</span>(id, worked=<span class="lit">true</span>)<br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> confidence <span class="lit">++</span> <span class="dim">|</span> threshold recalibrates<br>
+      &nbsp;&nbsp;<span class="dim">&rarr;</span> meta-tactics about myelin itself emerge
+    </div>
+  </section>
+
+  <!-- EVIDENCE -->
+  <section>
+    <h2><span class="num">03</span> What the research says</h2>
+
+    <p>
+      18 findings. Two empirical studies. Six prior art systems surveyed. One GPT-5.2 peer review. The decision was earned through evidence, not intuition.
+    </p>
+
+    <div class="evidence">
+      <div class="evidence-item">
+        <div class="evidence-grade confirmed">Confirmed</div>
+        <div class="evidence-body">
+          <h4>Auto-generated context hurts performance</h4>
+          <p>LLM-generated AGENTS.md files reduce task success by 2&ndash;3% and increase costs 20%+. Human-written files improve success by 4%. The human gate is the proven differentiator.</p>
+          <div class="src">ETH Zurich &middot; arxiv 2602.11988 &middot; 138 tasks, 4 agents (Claude Code, Codex, GPT, Qwen)</div>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="evidence-grade confirmed">Confirmed</div>
+        <div class="evidence-body">
+          <h4>Nothing does cross-session learning yet</h4>
+          <p>Reflexion reflects within trials. A-Mem links within sessions. Mem0 remembers conversational facts. AGENTS.md persists but requires manual curation. The cross-session gap is real and unfilled.</p>
+          <div class="src">6 systems surveyed &middot; Reflexion, A-Mem (NeurIPS '25), Mem0, AutoGen, AGENTS.md, Self-Improving Agents (ICLR '25)</div>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="evidence-grade reasoned">Reasoned</div>
+        <div class="evidence-body">
+          <h4>Failures teach more than successes</h4>
+          <p>The ExpeL framework found failure-derived heuristics substantially outperform success-derived ones. Anti-patterns that prune bad strategies are more valuable than positive guidance.</p>
+          <div class="src">ExpeL extending Reflexion &middot; cited in addyosmani.com/blog/self-improving-agents</div>
+        </div>
+      </div>
+
+      <div class="evidence-item">
+        <div class="evidence-grade reasoned">Reasoned</div>
+        <div class="evidence-body">
+          <h4>The feedback loop is recursive</h4>
+          <p>tactic_feedback() tracks which tactics get used and whether sessions improve. Activation rates calibrate promotion thresholds. Myelin generates meta-tactics about its own effectiveness. The evaluation harness IS the self-improvement mechanism.</p>
+          <div class="src">Architectural analysis &middot; finding 0018</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DECISION -->
+  <section>
+    <h2><span class="num">04</span> The architecture decision</h2>
+
+    <p>Three candidates. Five weighted criteria (correctness, effort, self-improvement, safety, ecosystem fit). Scored after peer review.</p>
+
+    <div class="scores">
+      <div class="score-card">
+        <h4>Auto-Promote</h4>
+        <div class="big">37</div>
+        <div class="why">Fast but repeats the&nbsp;AGENTS.md failure mode</div>
+      </div>
+      <div class="score-card winner">
+        <h4>Commons + Human Gate</h4>
+        <div class="big">46</div>
+        <div class="why">Evidence-backed &middot; the&nbsp;human gate is proven</div>
+      </div>
+      <div class="score-card">
+        <h4>Standalone</h4>
+        <div class="big">31</div>
+        <div class="why">Two daemons, two&nbsp;DBs &middot; over-engineered</div>
       </div>
     </div>
 
-    <div class="knowledge-card user">
-      <div class="icon">&#9881;</div>
-      <h3>User Model</h3>
-      <p>Behavioral profile predicting productive sessions. Not biographical. Transparent, editable, resettable.</p>
-      <div class="example">
-        USER-MODEL: work-style<br>
-        From: 47 sessions<br><br>
-        "Says 'go' = zero discussion. Prefers proof over description. Checkpoint cadence: ~45 min."
-      </div>
-    </div>
-  </div>
-</section>
+    <p>
+      Core distillation lives in claude-session-commons. Myelin is the MCP server and CLI that exposes it &mdash; same architecture as resume-resume. All tactics require human approval to activate. Auto-promotion is a V2 path, earned after the feedback loop proves which tactic types are safe.
+    </p>
+  </section>
 
-<div class="divider"></div>
-
-<!-- PIPELINE -->
-<section>
-  <h2><span class="num">03</span> The Pipeline</h2>
-  <p class="section-lead">Built on claude-session-commons. Core logic in the shared library, myelin is the front door.</p>
-
-  <div class="pipeline">
-    <div class="pipe-step exists">
-      <div class="step-label">Exists</div>
-      <div class="step-name">Sessions</div>
-      <div class="step-detail">JSONL transcripts</div>
-    </div>
-    <div class="pipe-step exists">
-      <div class="step-label">Exists</div>
-      <div class="step-name">Parse &amp; Embed</div>
-      <div class="step-detail">commons + daemon</div>
-    </div>
-    <div class="pipe-step new">
-      <div class="step-label">New</div>
-      <div class="step-name">Distill</div>
-      <div class="step-detail">aggregate, promote, decay</div>
-    </div>
-    <div class="pipe-step new">
-      <div class="step-label">New</div>
-      <div class="step-name">Human Gate</div>
-      <div class="step-detail">review &amp; activate</div>
-    </div>
-    <div class="pipe-step new">
-      <div class="step-label">New</div>
-      <div class="step-name">Surface</div>
-      <div class="step-detail">MCP tools at boot</div>
-    </div>
+  <!-- PUNCHLINE -->
+  <div class="punchline">
+    <h2>AGENTS.md is a <em>notebook.</em><br>Myelin is a <em>nervous system.</em></h2>
+    <p>A notebook can't observe its own impact. It can't learn which instructions help and which hurt. It can't retire stale advice or promote proven patterns. Myelin can.</p>
+    <a href="https://github.com/eidos-agi/eidos-myelin" class="gh-link">github.com/eidos-agi/eidos-myelin &rarr;</a>
   </div>
 
-  <div class="loop-diagram">
-    <span class="highlight">Sessions</span> <span class="arrow">&rarr;</span> commons parses <span class="arrow">&rarr;</span> <span class="highlight">Distill</span> aggregates patterns <span class="arrow">&rarr;</span> <span class="green">Human approves</span> <span class="arrow">&rarr;</span> Tactics surface at boot
-    <br>
-    <span class="arrow">&uarr;</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">&darr;</span>
-    <br>
-    <span class="highlight">tactic_feedback()</span> <span class="arrow">&larr;</span> session outcomes <span class="arrow">&larr;</span> better sessions <span class="arrow">&larr;</span> <span class="highlight">tactics applied</span>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- RESEARCH -->
-<section>
-  <h2><span class="num">04</span> Evidence-Based Design</h2>
-  <p class="section-lead">18 research findings. 3 candidates evaluated. GPT-5.2 peer review. Decision earned, not assumed.</p>
-
-  <div class="stat-row">
-    <div class="stat">
-      <div class="number">18</div>
-      <div class="label">Research Findings</div>
-    </div>
-    <div class="stat">
-      <div class="number">3</div>
-      <div class="label">CONFIRMED</div>
-    </div>
-    <div class="stat">
-      <div class="number">7</div>
-      <div class="label">Sources Fetched</div>
-    </div>
-    <div class="stat">
-      <div class="number">46/50</div>
-      <div class="label">Winning Score</div>
-    </div>
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <span>eidos-myelin &middot; eidos agi &middot; 2026</span>
+    <span>decision earned via research.md &rarr; visionlog &rarr; ike</span>
   </div>
 
-  <div class="evidence-grid">
-    <div class="evidence-card">
-      <span class="tag confirmed">Confirmed</span>
-      <h3>Auto-generated context hurts</h3>
-      <p>ETH Zurich study: LLM-generated AGENTS.md files reduce task success by 2&ndash;3% while increasing costs 20%+. Human-written files improve success by 4%. The human gate is the difference.</p>
-      <div class="source">arxiv 2602.11988 &mdash; 138 tasks, 4 agents</div>
-    </div>
-    <div class="evidence-card">
-      <span class="tag confirmed">Confirmed</span>
-      <h3>No system does this yet</h3>
-      <p>Reflexion, A-Mem, Mem0, AutoGen &mdash; all operate within sessions. AGENTS.md persists but requires manual curation. No system automates cross-session tactical distillation from coding agent transcripts.</p>
-      <div class="source">6 prior art systems surveyed</div>
-    </div>
-    <div class="evidence-card">
-      <span class="tag insight">Insight</span>
-      <h3>Failures teach more than successes</h3>
-      <p>ExpeL framework found failure-derived heuristics substantially outperform success-derived ones. Anti-patterns may be more valuable than positive tactics.</p>
-      <div class="source">Extending Reflexion &mdash; cited by Addy Osmani</div>
-    </div>
-    <div class="evidence-card">
-      <span class="tag insight">Insight</span>
-      <h3>Myelin improves myelin</h3>
-      <p>The feedback loop is recursive. tactic_feedback() tracks which tactics get used. Activation rates calibrate thresholds. Meta-tactics about myelin's own effectiveness emerge naturally.</p>
-      <div class="source">Architectural analysis &mdash; finding 0018</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- DECISION -->
-<section>
-  <h2><span class="num">05</span> Architecture Decision</h2>
-  <p class="section-lead">Three candidates scored against 5 weighted criteria. Clear winner.</p>
-
-  <div class="comparison">
-    <div class="comp-card">
-      <h3>Auto-Promote</h3>
-      <div class="score">37</div>
-      <div class="verdict">Fast but unsafe. Repeats the AGENTS.md failure mode. Valid V2 path.</div>
-    </div>
-    <div class="comp-card winner">
-      <h3>Commons + Human Gate</h3>
-      <div class="score">46</div>
-      <div class="verdict">Evidence-backed. Human gate is the proven differentiator. Build here.</div>
-    </div>
-    <div class="comp-card">
-      <h3>Standalone Package</h3>
-      <div class="score">31</div>
-      <div class="verdict">Over-engineered. Two daemons, two DBs. Not justified at this scale.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- BOTTOM LINE -->
-<div class="bottom-line">
-  <h2>AGENTS.md is a notebook.<br>Myelin is a nervous system.</h2>
-  <p>
-    A notebook can't observe its own impact. It can't learn which instructions help and which hurt.
-    It can't retire stale advice or promote proven patterns. Myelin can &mdash; because the evaluation
-    harness feeds back into the distillation pipeline. The tool gets smarter by watching itself work.
-  </p>
-  <a href="https://github.com/eidos-agi/eidos-myelin" class="cta">View on GitHub</a>
 </div>
 
-<div class="footer">
-  eidos-myelin &mdash; Eidos AGI &mdash; 2026<br>
-  Built with the research.md &rarr; visionlog &rarr; ike trilogy
-</div>
+<script>
+// Organic neural network animation
+const canvas = document.getElementById('neurons');
+const ctx = canvas.getContext('2d');
+let nodes = [];
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight * 3;
+}
+
+function init() {
+  resize();
+  nodes = [];
+  const count = Math.floor((w * h) / 40000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: (Math.random() - 0.5) * 0.15,
+      r: Math.random() * 2 + 1,
+      pulse: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.01 + 0.005
+    });
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  const scroll = window.scrollY;
+  const viewTop = scroll;
+  const viewBottom = scroll + window.innerHeight;
+
+  // connections
+  for (let i = 0; i < nodes.length; i++) {
+    const a = nodes[i];
+    if (a.y < viewTop - 200 || a.y > viewBottom + 200) continue;
+    for (let j = i + 1; j < nodes.length; j++) {
+      const b = nodes[j];
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        const alpha = (1 - dist / 150) * 0.12;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(91, 60, 196, ${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // nodes
+  for (const n of nodes) {
+    if (n.y < viewTop - 100 || n.y > viewBottom + 100) continue;
+    n.pulse += n.speed;
+    const glow = 0.3 + Math.sin(n.pulse) * 0.2;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(91, 60, 196, ${glow})`;
+    ctx.fill();
+
+    // move
+    n.x += n.vx;
+    n.y += n.vy;
+    if (n.x < 0 || n.x > w) n.vx *= -1;
+    if (n.y < 0 || n.y > h) n.vy *= -1;
+  }
+
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', () => { resize(); });
+init();
+draw();
+</script>
 
 </body>
 </html>
